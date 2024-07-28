@@ -76,6 +76,7 @@ class Inversion(Migration):
             Used to check that the correct module is set when performing a
             `thrifty` inversion.
         """
+        print('initWD_iniversion')
         super().__init__(**kwargs)
 
         self.start = start

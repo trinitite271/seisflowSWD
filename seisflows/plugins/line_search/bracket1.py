@@ -20,7 +20,7 @@ from seisflows import logger
 from seisflows.tools.math import parabolic_backtrack, polynomial_fit
 
 
-class Bracket:
+class Bracket1:
     """
     [line_search.bracket] The bracketing line search identifies two points
     between which the minimum misfit lies between.
@@ -46,7 +46,7 @@ class Bracket:
         self.gtp = []
         self.step_count = 0
         self.iteridx = []
-
+        self.loop_states = ''
     def __str__(self):
         """Simply print out all attributes, used for debugging mainly"""
         str_out = ""
@@ -263,7 +263,6 @@ class Bracket:
         # Some boolean checks to see where we're at in the inversion
         first_iteration = bool(self.update_count == 1)
         first_step = bool(self.step_count == 1)
-
         # For the first inversion and initial step, set alpha manually
         if first_iteration and first_step:  # == i00s00
             # Based on idea from Dennis and Schnabel
@@ -271,6 +270,7 @@ class Bracket:
             logger.info(f"try: first evaluation, guessing step length based on "
                         f"gradient value")
             status = "TRY"
+            self.loop_states = status.upper()
         # For every iteration's initial step, set alpha manually
         elif first_step and (not first_iteration):
             # Based on the first equation in sec 3.5 of Nocedal and Wright 2ed
@@ -279,29 +279,34 @@ class Bracket:
             logger.info(f"try: first step of iteration, "
                         f"setting scaled step length")
             status = "TRY"
+            self.loop_states = status.upper()
         # If misfit is reduced and then increased, we've bracketed. Pass
         elif _check_bracket(x, f) and _good_enough(x, f):
             alpha = x[f.argmin()]
             logger.info(f"pass: bracket acceptable and step length "
                         f"reasonable. returning minimum line search misfit")
             status = "PASS"
+            self.loop_states = status.upper()
         # If misfit is reduced but not close, set to quadratic fit
         elif _check_bracket(x, f):
             alpha = polynomial_fit(x, f)
             logger.info(f"try: bracket acceptable but step length unreasonable "
                         f"attempting to re-adjust step length")
             status = "TRY"
+            self.loop_states = status.upper()
         # If misfit continues to step down, increase step length
         elif self.step_count < self.step_count_max and all(f <= f[0]):
             alpha = 1.618034 * x[-1]  # 1.618034 is the 'golden ratio'
             logger.info(f"try: misfit not bracketed, increasing step length "
                         f"using golden ratio")
             status = "TRY"
-        # elif all(f <= f[0]):
-        #     alpha = x[f.argmin()]
-        #     logger.info(f"pass: bracket acceptable and step length "
-        #                 f"The residuals are dropping, what do you want")
-        #     status = "PASS"
+            self.loop_states = status.upper()
+        elif all(f <= f[0]):
+            alpha = x[f.argmin()]
+            logger.info(f"pass: bracket acceptable and step length "
+                        f"The residuals are dropping, what do you want")
+            status = "PASS"
+            self.loop_states = status.upper()
         # If misfit increases, reduce step length by backtracking
         elif self.step_count < self.step_count_max:
             slope = self.gtp[-1] / self.gtg[-1]
@@ -310,6 +315,16 @@ class Bracket:
             logger.info(f"try: misfit increasing, attempting "
                         f"to reduce step length using parabolic backtrack")
             status = "TRY"
+            self.loop_states = status.upper()
+        # step_count_max exceeded, fail
+        elif _good_decrease(x, f):
+            slope = self.gtp[-1] / self.gtg[-1]
+            alpha = parabolic_backtrack(f0=f[0], g0=slope, x1=x[1],
+                                        f1=f[1], b1=0.1, b2=0.5)
+            logger.info(f"pass: bracket acceptable and step length "
+                        f"The residuals are decreasing, what more do you want")
+            status = "PASS"
+            self.loop_states = status.upper()
         # step_count_max exceeded, fail
         else:
             logger.info(f"fail: bracketing line search has failed "
@@ -317,6 +332,7 @@ class Bracket:
                         f"`step_count_max`={self.step_count_max}")
             alpha = None
             status = "FAIL"
+            self.loop_states = status.upper()
                 
         # Decrement step count to set the final accepted value if pass because
         # we will not be running another step
@@ -375,5 +391,27 @@ def _good_enough(step_lens, func_vals, thresh=np.log10(1.2)):
     return okay
 
 
+def _good_decrease(step_lens, func_vals, thresh=np.log10(1.2)):
+    """
+    Checks if step length is reasonably close to quadratic estimate
 
+    :type step_lens: np.array
+    :param step_lens: an array of the step lengths taken during iteration
+    :type func_vals: np.array
+    :param func_vals: array of misfit values from eval func function
+    :type thresh: numpy.float64
+    :param thresh: threshold value for comparison against quadratic estimate
+    :rtype: bool
+    :return: status of function as a bool
+    """
+    x, f = step_lens, func_vals
+    if not _check_bracket(x, f):
+        okay = False
+    else:
+        x0 = polynomial_fit(x, f)
+        if any(np.abs(np.log10(x[1:] / x0)) < thresh):
+            okay = True
+        else:
+            okay = False
+    return okay
 

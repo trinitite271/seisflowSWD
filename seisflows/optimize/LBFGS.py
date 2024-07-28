@@ -68,8 +68,8 @@ class LBFGS(Gradient):
         super().__init__(**kwargs)
 
         # Overwrite user-chosen line search. L-BFGS requires 'Backtrack'ing LS
-        if self.line_search_method.title() != "Backtrack":
-            self.line_search_method = "Backtrack"
+        if self.line_search_method.title() != "Backtrack1":
+            self.line_search_method = "Backtrack1"
             self._line_search = getattr(
                 line_search_dir, self.line_search_method)(
                     step_count_max=self.step_count_max,

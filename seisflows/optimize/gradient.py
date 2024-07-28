@@ -79,7 +79,7 @@ class Gradient:
         Required to exist and contain files if `preconditioner`==True
     ***
     """
-    def __init__(self, line_search_method="bracket",
+    def __init__(self, line_search_method="bracket1",
                  preconditioner=None, step_count_max=10, step_len_init=0.01,
                  step_len_max=0.1, step_len_min=1E-3, workdir=os.getcwd(), 
                  path_optimize=None, path_output=None, path_preconditioner=None, 
@@ -124,7 +124,7 @@ class Gradient:
         if not hasattr(line_search_dir, line_search_method):
             logger.warning(f"{line_search_method} is not a valid line search "
                            f"algorithm, defaulting to 'bracket'")
-            line_search_method = "bracket"
+            line_search_method = "bracket1"
 
         self.line_search_method = line_search_method
 
@@ -466,7 +466,7 @@ class Gradient:
                         alpha = min_allowable_alpha
                     else:
                         logger.critical(msg.mjr("EXITING WORKFLOW"))
-                        sys.exit(-1)
+                        self._line_search.loop_states = "FAIL"
             # Determine maximum alpha as a fraction of the current model
             if self.step_len_max:
                 logger.debug("checking safeguard max allowable step length: "

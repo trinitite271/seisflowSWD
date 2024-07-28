@@ -592,10 +592,10 @@ class Model:
         # Choose default colormap based on parameter values
         if cmap is None:
             if "kernel" in parameter:
-                cmap = "seismic_r"
+                cmap = "jet"
                 zero_midpoint = True
             else:
-                cmap = "Spectral"
+                cmap = "jet"
                 zero_midpoint = False
 
         # 'Merge' the coordinate matrices to get a vector representation

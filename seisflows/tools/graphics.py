@@ -263,7 +263,7 @@ def plot_2d_contour(x, z, data, cmap="viridis", zero_midpoint=False):
     return f, p, cbar
 
 
-def plot_2d_image(x, z, data, cmap="viridis", zero_midpoint=False,
+def plot_2d_image(x, z, data, cmap="jet", zero_midpoint=False,
                   resX=1000, resZ=1000):
     """
     Plots values of a SPECEFM2D model/gradient by interpolating onto a regular 

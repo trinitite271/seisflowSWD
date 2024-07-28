@@ -97,7 +97,7 @@ class Forward:
         self.generate_data = generate_data
         self.export_traces = export_traces
         self.export_residuals = export_residuals
-
+        print('initWD_inForward')
         self.path = Dict(
             workdir=workdir,
             scratch=os.path.join(workdir, "scratch"),

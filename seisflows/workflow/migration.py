@@ -62,6 +62,7 @@ class Migration(Forward):
         """
         Instantiate Migration-specific parameters
         """
+        print('initWD_inMigration')
         super().__init__(**kwargs)
 
         self.export_gradient = export_gradient
