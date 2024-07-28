@@ -1,0 +1,142 @@
+ 
+ **********************************************
+ *** Specfem 2-D Mesher - MPI version       ***
+ **********************************************
+ 
+ Running Git version of the code corresponding to 
+ e70c9c88e5f0a1edc64870c514ef52d08e5d1ef0
+ dating 2024-06-05 17:41:24 +0200
+ 
+ Reading the parameter file...
+ 
+ Title of the simulation: model test
+ 
+   using existing STATIONS file: ./DATA/STATIONS
+   file name is ./DATA/STATIONS
+   found           90  receivers
+ 
+ Parameter file successfully read 
+ 
+ 
+ Mesh from internal meshing:
+   Materials:
+   Nb of solid, fluid or porous materials =            1
+ 
+ --------
+ Material #           1 
+  will be read in an external tomography file (TOMOGRAPHY_FILE in Par_file)
+ --------
+ 
+ Reading interface data from file: ./DATA/./interfaces.dat
+ Reading            2  points for interface            1
+ Reading            2  points for interface            2
+ 
+ Total number of layers in z direction =            1
+ There are           15  spectral elements along Z in layer            1
+ 
+ Total number of spectral elements along X =           45
+ Total number of spectral elements along Z =           15
+ 
+ Regions:
+   Nb of regions in the mesh =            1
+ 
+ ------
+ Region            1
+ IX from            1  to           45
+ IZ from            1  to           15
+ Material #            1  isotropic
+ Material is solid
+ vp     =   -1.000000    
+ vs     =    1.000000    
+ rho    =   -1.000000    
+ tomographic material =           -1
+ ------
+ 
+ creating mesh from internal meshing:
+   Total number of spectral elements         =          675
+ 
+ PML mesh elements:
+   Total number of PML elements =            0
+ 
+ The mesh contains          675  elements
+ 
+ Control elements have            4  nodes
+ 
+ Reading in SOURCE file...
+ 
+ Source           1
+   Position xs, zs =    1.00000000000000        59.0000000000000     
+ 
+   Source type (1=force, 2=moment tensor):            1
+   Force source:
+   Angle of the source (deg) =   0.000000000000000E+000
+ 
+   Time function type (1=Ricker, 2=First derivative, 3=Gaussian, 4=Dirac, 5=Heav
+ iside, 6,7=ocean type, 8=Read from file, 9=burst, 10=Sinusoidal, 11=Ormsby):
+           1
+   Ricker wavelet (second-derivative):
+   Frequency, delay =    30.0000000000000       0.000000000000000E+000
+   Multiplying factor  =    10000000000.0000     
+ 
+ all sources are okay
+ 
+ Normals to surface not needed
+ 
+ Node coordinates:
+ 
+ reading node coordinates from interfaces...
+ 
+ Mesh surfaces:
+   determining acoustic free surface...
+   number of acoustic elements with free surface =            0
+ 
+   determining absorbing boundary surfaces...
+   number of elements with absorbing boundaries =           75
+ 
+ 
+ Mesh dimensions: 
+   Min and max value of X in the grid =   0.000000000000000E+000
+   179.000000000000     
+   Min and max value of Z in the grid =    1.00000000000000     
+   60.0000000000000     
+ 
+ 
+ Saving the grid in Gnuplot format...
+ 
+ drawing horizontal lines of the grid
+ drawing vertical lines of the grid
+ Grid saved in Gnuplot format...
+ 
+ Mesh partitioning:
+   decomposing mesh using NPROC =            1
+ 
+ Graph construction:
+   graph adjacency done
+ 
+ Coupled interfaces:
+ nedges_coupled (acoustic/elastic)     =            0
+ nedges_coupled (acoustic/poroelastic) =            0
+ nedges_coupled (poroelastic/elastic)  =            0
+ 
+ Local numbering:
+   NPROC:            1
+   number of elements:          675
+ 
+ decompose mesh all done
+ 
+ Absorbing boundaries:
+   nedge_bound   :           75
+   nelemabs_merge:           75
+ 
+ Saving databases:
+   database file: ./OUTPUT_FILES/Database00000.bin
+   slice            0  has number of spectral elements =         675
+ 
+   VTK mesh files:
+   written file: ./OUTPUT_FILES//mesh_materials.vtk
+   written file: ./OUTPUT_FILES//mesh_partition_number.vtk
+   done
+ 
+ 
+ This will be a serial simulation
+ 
